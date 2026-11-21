@@ -1,18 +1,18 @@
 
 .DEFAULT_GOAL := help
 
-IMAGE ?= cmbe:dev
+IMAGE ?= launchpad:dev
 DOCKER ?= docker
 
 .PHONY: help build shell verify check clean
 
 help:
-	@echo "CMBE development commands:"
-	@echo "  make build   Build the CMBE image"
-	@echo "  make shell   Open an interactive CMBE shell"
+	@echo "Launchpad development commands:"
+	@echo "  make build   Build Launchpad image"
+	@echo "  make shell   Open an interactive Launchpad shell"
 	@echo "  make verify  Verify the installed toolchain"
 	@echo "  make check   Build and verify the image"
-	@echo "  make clean   Remove the local CMBE image"
+	@echo "  make clean   Remove the local Launchpad image"
 
 build:
 	$(DOCKER) build \

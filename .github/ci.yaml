@@ -28,7 +28,7 @@ jobs:
       - name: store-wheel
         uses: actions/upload-artifact@v4
         with:
-          name: cmbe-dist
+          name: launchpad-dist
           path: dist/
           if-no-files-found: error
           retention-days: 14

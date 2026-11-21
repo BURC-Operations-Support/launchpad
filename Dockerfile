@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 #
-# TITLE: Telemetry Hub
-# DESCRIPTION: Base Docker image for BURC Telemetry Hub project
+# TITLE: 
+# DESCRIPTION: Base Docker image for BURC Launchpad
 # AUTHOR: Cole H. Shaigec
 # DATE: Fall 2026
 # MAINTAINERS: Boston University Robotics Club

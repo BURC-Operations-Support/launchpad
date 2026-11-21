@@ -1,106 +1,134 @@
+
 #!/usr/bin/env bash
 set -euo pipefail
 
-GREEN='\033[0;32m'
-RED='\e[31m'
-NC='\033[0m' # No Color (Reset)
+# Launchpad platform verification
+# Fails immediately if the environment violates BURC standards.
 
-# Check ROS distro
-expected_ros="lyrical"
+readonly GREEN=$'\033[0;32m'
+readonly RED=$'\033[0;31m'
+readonly NC=$'\033[0m'
 
-if [[ "$ROS_DISTRO" == "$expected_ros" ]]; then 
-    echo -e "${GREEN}[PASS]${NC} ROS Jazzy Jalisco confirmed."
-else
-    echo -e "${RED}[FAIL] Expected ROS_DISTRO=${expected_ros}, got ${ROS_DISTRO}.${NC}"
+pass() {
+    printf '%b[PASS]%b %s\n' "$GREEN" "$NC" "$1"
+}
+
+fail() {
+    printf '%b[FAIL]%b %s\n' "$RED" "$NC" "$1" >&2
     exit 1
-fi
+}
 
-# Check Ubuntu version
-expected_ubuntu="Ubuntu 26.04"
-source /etc/os-release
-actual_ubuntu_distribution="$NAME"
-actual_ubuntu_version="$VERSION_ID"
-actual_ubuntu="${actual_ubuntu_distribution} ${actual_ubuntu_version}"
+check_command() {
+    local command_name="$1"
 
-if [[ "$actual_ubuntu" == "$expected_ubuntu" ]]; then 
-    echo -e "${GREEN}[PASS]${NC} ${expected_ubuntu} confirmed."
-else
-    echo -e "${RED}[FAIL] Expected ${expected_ubuntu}, got ${actual_ubuntu}.${NC}"
-    exit 1
-fi
-
-
-# Check Python version
-expected_python="3.14"
-actual_python_major="$(python3 -c 'import sys; print(sys.version_info.major)')"
-actual_python_minor="$(python3 -c 'import sys; print(sys.version_info.minor)')"
-
-if [[ "${actual_python_major}.${actual_python_minor}" == "$expected_python" ]]; then
-    echo -e "${GREEN}[PASS]${NC} Python ${expected_python} confirmed."
-else 
-    echo -e "${RED}[FAIL] Expected ${expected_python}, got ${actual_python_major}.${actual_python_minor}.${NC}"
-    exit 1
-fi
-
-# Check gcc version
-expected_gcc_family="15"
-actual_gcc_family="$(gcc -dumpversion)"
-if [[ "$actual_gcc_family" == "$expected_gcc_family" ]]; then
-    echo -e "${GREEN}[PASS]${NC} gcc ${expected_gcc_family} confirmed."
-else 
-    echo -e "${RED}[FAIL] Expected ${expected_gcc_family}, got ${actual_gcc_family}.${NC}"
-    exit 1
-fi
-
-# Confirm presence of g++, git, cmake, and colcon
-REQUIRED_DEPENDENCIES=(g++ git cmake colcon)
-
-confirm_dependency_present() {
-    dependency="$1"
-    dependency_status="$(command -v $dependency)"
-    if [[ -z "$dependency_status" ]]; then
-        echo "${RED}[FAIL] ${dependency} not found.${NC}"
-        exit 1
-    else 
-        echo -e "${GREEN}[PASS]${NC} ${dependency} confirmed."
+    if command -v "$command_name" >/dev/null 2>&1; then
+        pass "$command_name available"
+    else
+        fail "$command_name not found"
     fi
 }
 
-for dep in "${REQUIRED_DEPENDENCIES[@]}"; do
-    confirm_dependency_present $dep
+check_version() {
+    local name="$1"
+    local expected="$2"
+    local actual="$3"
+
+    if [[ "$actual" == "$expected" ]]; then
+        pass "$name $expected"
+    else
+        fail "$name: expected '$expected', got '$actual'"
+    fi
+}
+
+echo "=== Launchpad Platform Verification ==="
+
+# ------------------------------------------------------------
+# Operating system and ROS
+# ------------------------------------------------------------
+
+source /etc/os-release
+
+check_version "Ubuntu" "26.04" "$VERSION_ID"
+check_version "ROS 2 distribution" "lyrical" "${ROS_DISTRO:-unset}"
+
+# ------------------------------------------------------------
+# Python and ROS Python bindings
+# ------------------------------------------------------------
+
+check_command python3
+
+actual_python="$(
+    python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'
+)"
+
+check_version "Python" "3.14" "$actual_python"
+
+if /usr/bin/python3 -c "import rclpy" >/dev/null 2>&1; then
+    pass "ROS Python bindings (rclpy)"
+else
+    fail "Cannot import rclpy using /usr/bin/python3"
+fi
+
+# ------------------------------------------------------------
+# C++ build and development tools
+# ------------------------------------------------------------
+
+for dependency in \
+    gcc \
+    g++ \
+    git \
+    cmake \
+    make \
+    colcon \
+    rosdep \
+    gdb \
+    clang-format-18 \
+    clang-tidy-18
+do
+    check_command "$dependency"
 done
 
-# Verify uv version
-expected_uv="0.12.19"
-actual_uv="$(uv self version --short)"
+actual_gcc="$(gcc -dumpfullversion -dumpversion)"
+check_version "GCC major" "15" "${actual_gcc%%.*}"
 
-if [[ "$actual_uv" == "$expected_uv" ]]; then
-    echo -e "${GREEN}[PASS]${NC} uv ${expected_uv} confirmed."
-else
-    echo -e "${RED}[FAIL] expected uv ${expected_uv}, got ${actual_uv}${NC}."
-    exit 1
-fi
+# Verify GoogleTest and GoogleMock development files
+[[ -f /usr/include/gtest/gtest.h ]] \
+    || fail "GoogleTest headers missing"
 
-# Verify ruff version
-expected_ruff="ruff 0.16.9"
-actual_ruff="$(ruff --version)"
+pass "GoogleTest headers"
 
-if [[ "$actual_ruff" == "$expected_ruff" ]]; then
-    echo -e "${GREEN}[PASS]${NC} ${expected_ruff} confirmed."
-else 
-    echo -e "${RED}[FAIL] expected ${expected_ruff}, got ${actual_ruff}${NC}."
-    exit 1
-fi
+[[ -f /usr/include/gmock/gmock.h ]] \
+    || fail "GoogleMock headers missing"
 
-# Verify pyright version
-expected_pyright="pyright 1.1.414"
-actual_pyright="$(pyright --version)"
+pass "GoogleMock headers"
 
-if [[  "$actual_pyright" == "$expected_pyright" ]]; then
-    echo -e "${GREEN}[PASS]${NC} ${expected_pyright} confirmed."
-else 
-    echo -e "${RED}[FAIL] expected ${expected_pyright}, got ${actual_pyright}${NC}."
-    exit 1
-fi 
+# ------------------------------------------------------------
+# Python development tools
+# ------------------------------------------------------------
 
-# 
+check_command uv
+check_command ruff
+check_command pyright
+check_command pytest
+
+check_version "uv" \
+    "0.12.19" \
+    "$(uv self version --short)"
+
+check_version "Ruff" \
+    "ruff 0.16.9" \
+    "$(ruff --version)"
+
+check_version "Pyright" \
+    "pyright 1.1.414" \
+    "$(pyright --version)"
+
+actual_pytest="$(pytest --version)"
+check_version "pytest" "pytest 9.1.1" "$actual_pytest"
+
+# ------------------------------------------------------------
+# Completion
+# ------------------------------------------------------------
+
+printf '\n'
+pass "Launchpad platform verification completed successfully"
