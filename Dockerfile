@@ -48,6 +48,7 @@ COPY --chmod=755 \
     ./scripts/verify-platform.sh \
     /usr/local/bin/verify-platform.sh
 
-RUN /usr/local/bin/verify-platform.sh
+RUN source "/opt/ros/${ROS_DISTRO}/setup.bash" \
+    && /usr/local/bin/verify-platform.sh
 
 CMD ["bash"]

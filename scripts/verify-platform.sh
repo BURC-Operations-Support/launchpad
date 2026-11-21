@@ -7,6 +7,7 @@ set -euo pipefail
 
 readonly GREEN=$'\033[0;32m'
 readonly RED=$'\033[0;31m'
+readonly ORANGE=$'\033[38;5;208m'
 readonly NC=$'\033[0m'
 
 pass() {
@@ -131,4 +132,5 @@ check_version "pytest" "pytest 9.1.1" "$actual_pytest"
 # ------------------------------------------------------------
 
 printf '\n'
-pass "Launchpad platform verification completed successfully"
+printf '%b[SUCCESS] Launchpad verification complete. Ready for liftoff!%b\n' \
+    "$ORANGE" "$NC"
