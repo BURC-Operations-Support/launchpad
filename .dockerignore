@@ -1,11 +1,20 @@
+
+# ============================================================
+# BURC Launchpad — Docker build context
+# ============================================================
+
 # Version control
 .git/
+.github/
 
-# Python environments
+# Documentation and editor metadata
+.vscode/
+.idea/
+.DS_Store
+
+# Python environments and caches
 .venv/
 venv/
-
-# Python caches
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -13,21 +22,32 @@ __pycache__/
 .mypy_cache/
 .pyright/
 
-# Packaging artifacts
+# Python packaging
 dist/
 build/
 *.egg-info/
+
+# ROS 2 / colcon generated artifacts
+install/
+log/
+
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+cmake-build-*/
 
 # Local configuration and secrets
 .env
 .env.*
 !.env.example
-
-# Editor and operating system files
-.vscode/
-.idea/
-.DS_Store
+secrets/
 
 # Test and coverage artifacts
 .coverage
 htmlcov/
+
+# Local temporary files
+*.log
+*.tmp
+*.swp
+*~

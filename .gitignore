@@ -1,52 +1,40 @@
 
 # ============================================================
-# BU Robotics Club — Launchpad
-# .gitignore
+# BURC Launchpad — Git exclusions
 # ============================================================
 
-# ------------------------------------------------------------
-# Python
-# ------------------------------------------------------------
+# Python bytecode and caches
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
-.eggs/
-build/
-dist/
-pip-wheel-metadata/
-
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-
-# Python tooling
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
+.mypy_cache/
 .pyright/
-.hypothesis/
-.tox/
-.nox/
+.mypy_cache/
 .coverage
 .coverage.*
 htmlcov/
-coverage.xml
-*.prof
 
-# ------------------------------------------------------------
-# C / C++ / CMake
-# ------------------------------------------------------------
+# Python virtual environments and packaging
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+
+# ROS 2 / colcon generated artifacts
+build/
+install/
+log/
+
+# CMake artifacts
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 compile_commands.json
-Testing/
 cmake-build-*/
+
+# Compiled binaries and libraries
 *.o
 *.obj
 *.a
@@ -55,57 +43,19 @@ cmake-build-*/
 *.dylib
 *.exe
 
-# ------------------------------------------------------------
-# Environment variables and secrets
-# ------------------------------------------------------------
+# Environment variables and credentials
 .env
 .env.*
 !.env.example
 !.env.*.example
-
+secrets/
+credentials/
 *.pem
 *.key
 *.p12
 *.pfx
-*.crt
-secrets/
-credentials/
 
-
-# ------------------------------------------------------------
-# Data and local storage
-# ------------------------------------------------------------
-data/
-storage/
-uploads/
-exports/
-*.parquet
-*.arrow
-*.feather
-
-# ------------------------------------------------------------
-# Logs and runtime artifacts
-# ------------------------------------------------------------
-*.log
-logs/
-tmp/
-temp/
-*.tmp
-*.pid
-*.pid.lock
-*.sock
-
-# ------------------------------------------------------------
-# Docker / Containers
-# ------------------------------------------------------------
-.docker/
-docker-data/
-docker-volumes/
-*.tar
-
-# ------------------------------------------------------------
-# IDEs and editors
-# ------------------------------------------------------------
+# Editor metadata
 .idea/
 .vscode/*
 !.vscode/extensions.json
@@ -115,30 +65,18 @@ docker-volumes/
 *.swp
 *.swo
 *~
-.project
-.classpath
-.settings/
 
-# ------------------------------------------------------------
-# Operating systems
-# ------------------------------------------------------------
+# Operating system artifacts
 .DS_Store
 .AppleDouble
-.LSOverride
 Thumbs.db
 Desktop.ini
-$RECYCLE.BIN/
 
-# ------------------------------------------------------------
-# Jupyter
-# ------------------------------------------------------------
-.ipynb_checkpoints/
+# Logs and temporary files
+*.log
+tmp/
+temp/
+*.tmp
 
-# ------------------------------------------------------------
 # Local caches
-# ------------------------------------------------------------
 .cache/
-.cache-*/
-.pyre/
-.pytype/
-.pybuilder/
