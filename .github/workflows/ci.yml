@@ -36,8 +36,8 @@ jobs:
       - name: Publish image
         if: github.event_name == 'push'
         run: |
-          docker tag cmbe:dev "${IMAGE}:main"
-          docker tag cmbe:dev "${IMAGE}:sha-${GITHUB_SHA}"
+          docker tag launchpad:dev "${IMAGE}:main"
+          docker tag launchpad:dev "${IMAGE}:sha-${GITHUB_SHA}"
           docker push "${IMAGE}:main"
           docker push "${IMAGE}:sha-${GITHUB_SHA}"
 
