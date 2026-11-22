@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE: ghcr.io/burc-operations-support/launchpad
+  GHCR_IMAGE: ghcr.io/burc-operations-support/launchpad
 
 jobs:
   verify:
@@ -36,11 +36,11 @@ jobs:
       - name: Publish image
         if: github.event_name == 'push'
         run: |
-          docker tag launchpad:dev "${IMAGE}:main"
-          docker tag launchpad:dev "${IMAGE}:sha-${GITHUB_SHA}"
-          docker push "${IMAGE}:main"
-          docker push "${IMAGE}:sha-${GITHUB_SHA}"
-
+          docker tag launchpad:dev "${GHCR_IMAGE}:main"
+          docker tag launchpad:dev "${GHCR_IMAGE}:sha-${GITHUB_SHA}"
+          docker push "${GHCR_IMAGE}:main"
+          docker push "${GHCR_IMAGE}:sha-${GITHUB_SHA}"
+      
     permissions:
       contents: read
       packages: write
