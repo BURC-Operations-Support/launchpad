@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 #
+# ============================================================
 # TITLE: BURC Launchpad
 # DESCRIPTION: Base Docker image for BURC Launchpad
 # AUTHOR: Cole H. Shaigec
@@ -12,6 +13,7 @@
 # NOTES:
 #   The project Makefile provides a predefined Docker interface for this project.
 #   Where possible, use the Makefile interface instead of direct Docker invocations.
+# ============================================================
 
 FROM ros:lyrical-ros-base-resolute
 
