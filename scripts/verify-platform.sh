@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -52,6 +51,8 @@ source /etc/os-release
 check_version "Ubuntu" "26.04" "$VERSION_ID"
 check_version "ROS 2 distribution" "lyrical" "${ROS_DISTRO:-unset}"
 
+check_command ros2
+
 # ------------------------------------------------------------
 # Python and ROS Python bindings
 # ------------------------------------------------------------
@@ -74,6 +75,11 @@ fi
 # C++ build and development tools
 # ------------------------------------------------------------
 
+# Verify the standardized executable names exposed to
+# downstream projects, rather than version-specific names.
+#
+# LLVM version selection is an internal responsibility
+# of the Launchpad platform.
 for dependency in \
     gcc \
     g++ \
@@ -83,8 +89,8 @@ for dependency in \
     colcon \
     rosdep \
     gdb \
-    clang-format-18 \
-    clang-tidy-18
+    clang-format \
+    clang-tidy
 do
     check_command "$dependency"
 done
@@ -92,7 +98,27 @@ done
 actual_gcc="$(gcc -dumpfullversion -dumpversion)"
 check_version "GCC major" "15" "${actual_gcc%%.*}"
 
-# Verify GoogleTest and GoogleMock development files
+# Verify that the standardized LLVM executables resolve to
+# working installations of the mandated LLVM major version.
+actual_clang_format="$(clang-format --version)" \
+    || fail "clang-format failed to execute"
+
+actual_clang_tidy="$(clang-tidy --version)" \
+    || fail "clang-tidy failed to execute"
+
+if [[ "$actual_clang_format" =~ version[[:space:]]+([0-9]+) ]]; then
+    check_version "clang-format major" "18" "${BASH_REMATCH[1]}"
+else
+    fail "Cannot determine clang-format version: $actual_clang_format"
+fi
+
+if [[ "$actual_clang_tidy" =~ version[[:space:]]+([0-9]+) ]]; then
+    check_version "clang-tidy major" "18" "${BASH_REMATCH[1]}"
+else
+    fail "Cannot determine clang-tidy version: $actual_clang_tidy"
+fi
+
+# Verify GoogleTest and GoogleMock development files.
 [[ -f /usr/include/gtest/gtest.h ]] \
     || fail "GoogleTest headers missing"
 
