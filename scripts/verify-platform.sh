@@ -154,6 +154,40 @@ actual_pytest="$(pytest --version)"
 check_version "pytest" "pytest 9.1.1" "$actual_pytest"
 
 # ------------------------------------------------------------
+# CAN development infrastructure
+# ------------------------------------------------------------
+
+# Verify protocol-agnostic CAN tooling.
+#
+# Active CAN interfaces and kernel-level SocketCAN support
+# are runtime concerns, not image-level requirements.
+
+for dependency in \
+    ip \
+    candump \
+    cansend \
+    cangen \
+    canplayer \
+    cansniffer \
+    canbusload
+do
+    check_command "$dependency"
+done
+
+# Verify SocketCAN userspace development headers.
+for header in \
+    /usr/include/linux/can.h \
+    /usr/include/linux/can/raw.h \
+    /usr/include/linux/can/bcm.h \
+    /usr/include/linux/can/error.h
+do
+    [[ -f "$header" ]] \
+        || fail "SocketCAN header missing: $header"
+
+    pass "SocketCAN header: ${header#/usr/include/}"
+done
+
+# ------------------------------------------------------------
 # Completion
 # ------------------------------------------------------------
 

@@ -44,6 +44,16 @@ ENV UV_TOOL_DIR="/opt/burc/tools" \
 # LLVM version selection remains the responsibility of Launchpad.
 # Update the package names and symbolic links together when
 # upgrading LLVM.
+# 
+# Launchpad provides protocol-agnostic CAN development 
+# infrastructure through SocketCAN headers, CAN utilities, 
+# and network interface management tools.
+#
+# Application-specific CAN protocol implementations remain
+# the responsibility of downstream projects.
+#
+# CAN interface availability depends on the runtime kernel
+# and is not guaranteed by the Launchpad image.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         nodejs \
@@ -52,6 +62,9 @@ RUN apt-get update \
         clang-format-18 \
         clang-tidy-18 \
         gdb \
+        can-utils \
+        iproute2 \
+        linux-libc-dev \
     && ln -sf /usr/bin/clang-format-18 /usr/local/bin/clang-format \
     && ln -sf /usr/bin/clang-tidy-18 /usr/local/bin/clang-tidy \
     && rm -rf /var/lib/apt/lists/*
