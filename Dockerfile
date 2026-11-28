@@ -69,8 +69,8 @@ RUN apt-get update \
         can-utils \
         iproute2 \
         linux-libc-dev \
-    && ln -sf /usr/bin/clang-format-18 /usr/local/bin/clang-format \
-    && ln -sf /usr/bin/clang-tidy-18 /usr/local/bin/clang-tidy \
+    && ln -sf /usr/bin/clang-format-22 /usr/local/bin/clang-format \
+    && ln -sf /usr/bin/clang-tidy-22 /usr/local/bin/clang-tidy \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pinned development tools.

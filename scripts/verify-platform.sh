@@ -107,13 +107,13 @@ actual_clang_tidy="$(clang-tidy --version)" \
     || fail "clang-tidy failed to execute"
 
 if [[ "$actual_clang_format" =~ version[[:space:]]+([0-9]+) ]]; then
-    check_version "clang-format major" "18" "${BASH_REMATCH[1]}"
+    check_version "clang-format major" "22" "${BASH_REMATCH[1]}"
 else
     fail "Cannot determine clang-format version: $actual_clang_format"
 fi
 
 if [[ "$actual_clang_tidy" =~ version[[:space:]]+([0-9]+) ]]; then
-    check_version "clang-tidy major" "18" "${BASH_REMATCH[1]}"
+    check_version "clang-tidy major" "22" "${BASH_REMATCH[1]}"
 else
     fail "Cannot determine clang-tidy version: $actual_clang_tidy"
 fi
