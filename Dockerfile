@@ -44,6 +44,10 @@ ENV UV_TOOL_DIR="/opt/burc/tools" \
 # LLVM version selection remains the responsibility of Launchpad.
 # Update the package names and symbolic links together when
 # upgrading LLVM.
+#
+# Do not revert LLVM below 22 -- a V22 patch removed checks
+# on third-party code. Older versions are up to 99% slower and 
+# introduce tens of thousands of superfluous warnings.
 # 
 # Launchpad provides protocol-agnostic CAN development 
 # infrastructure through SocketCAN headers, CAN utilities, 
@@ -59,8 +63,8 @@ RUN apt-get update \
         nodejs \
         libgtest-dev \
         libgmock-dev \
-        clang-format-18 \
-        clang-tidy-18 \
+        clang-format-22 \
+        clang-tidy-22 \
         gdb \
         can-utils \
         iproute2 \
