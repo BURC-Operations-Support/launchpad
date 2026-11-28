@@ -79,6 +79,12 @@ RUN uv tool install --python /usr/bin/python3 pyright==1.1.414 \
     && uv tool install --python /usr/bin/python3 ruff==0.16.9 \
     && uv tool install --python /usr/bin/python3 pytest==9.1.1
 
+# Execute centrally managed pytest using the downstream
+# project's Python interpreter and ROS execution environment.
+COPY --chmod=755 \
+    ./scripts/launchpad-pytest.sh \
+    /usr/local/bin/launchpad-pytest
+
 # Verify the standardized environment.
 COPY --chmod=755 \
     ./scripts/verify-platform.sh \

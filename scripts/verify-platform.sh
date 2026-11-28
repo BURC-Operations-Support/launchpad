@@ -138,6 +138,15 @@ check_command ruff
 check_command pyright
 check_command pytest
 
+# The Launchpad pytest launcher executes centrally managed
+# pytest using the downstream project's Python interpreter.
+#
+# Only verify executable availability here, since /opt/venv
+# is created by the downstream project's Dockerfile.
+# Functional verification belongs to downstream acceptance
+# testing.
+check_command launchpad-pytest
+
 check_version "uv" \
     "0.12.19" \
     "$(uv self version --short)"
